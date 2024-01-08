@@ -62,7 +62,7 @@ lazy val test = Seq(
 lazy val server = (project in file("."))
   .settings(
     name := "typelevel-project",
-    idePackagePrefix := Some("com.smartland.jobsboard"),
+    idePackagePrefix := Some("com.smartland"),
     scalaVersion := scala3Version,
     organization := smartland,
     libraryDependencies ++= http4s ++ cats ++ circe ++ config ++ doobie ++ other ++ test

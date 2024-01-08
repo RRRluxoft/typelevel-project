@@ -1,5 +1,5 @@
-package com.smartland.jobsboard
-package playground
+package com.smartland
+package jobsboard.playground
 
 object SimplePlayground {
 
