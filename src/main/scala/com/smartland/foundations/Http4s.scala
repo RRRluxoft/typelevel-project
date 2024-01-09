@@ -1,4 +1,4 @@
-package foundations
+package com.smartland.foundations
 
 import cats.*
 import cats.implicits.*
@@ -20,12 +20,12 @@ import org.http4s.Request
 import cats.Applicative
 import cats.Monad
 import org.http4s.ember.server.EmberServerBuilder
-import foundations.Http4s.CourseREpository.courseRoutes
+import Http4s.CourseREpository.courseRoutes
 import org.http4s.Header
 import org.typelevel.ci.CIString
 import org.http4s.server.Router
-import foundations.Http4s.CourseREpository.allRoutes
-import foundations.Http4s.CourseREpository.routerWithPathPrefixes
+import Http4s.CourseREpository.allRoutes
+import Http4s.CourseREpository.routerWithPathPrefixes
 
 object Http4s extends IOApp.Simple {
 

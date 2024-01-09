@@ -49,3 +49,4 @@ project/project/**/
 .lh/src/main/scala/foundations/Http4s.scala.json
 .lh/
 **/project
+/typelevel-project.code-workspace

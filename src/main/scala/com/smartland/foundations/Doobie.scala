@@ -1,5 +1,4 @@
-package com.smartland
-package foundations
+package com.smartland.foundations
 
 import cats.effect.{IO, IOApp}
 import cats.effect.kernel.MonadCancelThrow
