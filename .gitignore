@@ -46,3 +46,6 @@ project/metals.sbt
 **/decrypted/**
 .vscode/
 project/project/**/
+.lh/src/main/scala/foundations/Http4s.scala.json
+.lh/
+**/project
