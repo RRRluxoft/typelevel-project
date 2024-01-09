@@ -1,7 +1,7 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 lazy val smartland = "com.smartland"
-lazy val scala3Version = "3.2.1"
+lazy val scala3Version = "3.3.1"
 
 lazy val circeVersion = "0.14.0"
 lazy val catsEffectVersion = "3.3.14"
@@ -13,7 +13,7 @@ lazy val tsecVersion = "0.4.0"
 lazy val scalaTestVersion = "3.2.12"
 lazy val scalaTestCatsEffectVersion = "1.4.0"
 lazy val testContainerVersion = "1.17.3"
-lazy val logbackVersion = "1.4.0"
+lazy val logbackVersion = "1.4.12"
 lazy val slf4jVersion = "2.0.0"
 lazy val javaMailVersion = "1.6.2"
 
