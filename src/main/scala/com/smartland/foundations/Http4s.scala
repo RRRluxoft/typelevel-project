@@ -1,16 +1,16 @@
 package com.smartland.foundations
 
+import cats.*
 import cats.effect.{IO, IOApp}
 import cats.implicits.*
-import cats.*
 import com.comcast.ip4s.Port
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import org.http4s.{Header, HttpRoutes, QueryParamDecoder, Request}
 import org.http4s.circe.*
 import org.http4s.dsl.impl.{OptionalValidatingQueryParamDecoderMatcher, QueryParamDecoderMatcher}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.ember.server.EmberServerBuilder
-import org.http4s.{Header, HttpRoutes, QueryParamDecoder, Request}
 import org.http4s.server.Router
 import org.typelevel.ci.CIString
 
@@ -93,7 +93,7 @@ object Http4s extends IOApp.Simple {
   override def run: IO[Unit] =
     // IO.println(UUID.randomUUID().toString())
     EmberServerBuilder.default[IO]
-      .withPort(Port.fromInt(18080).get)
+      .withPort(Port.fromInt(8080).get) // lsof -i :8080  // kill -9 PID#
       .withHttpApp(routerWithPathPrefixes)
       .build
       .use(_ => IO.println("Server ready!") *> IO.never)

@@ -36,3 +36,13 @@ VALUES (1, 'smart land'),
        (6, 'beer cat')
 ;
 ```
+
+```sbt
+sbt `runMain com.smartland.jobsboard.Application`
+
+```
+
+```sbt
+sbt ~ compile
+
+```

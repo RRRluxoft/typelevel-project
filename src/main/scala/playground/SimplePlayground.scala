@@ -1,4 +1,4 @@
-package com.smartland.jobsboard.playground
+package playground
 
 object SimplePlayground {
 
