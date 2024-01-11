@@ -6,6 +6,7 @@ import cats.implicits.*
 import com.smartland.jobsboard.config.EmberConfig
 import com.smartland.jobsboard.config.syntax.*
 import com.smartland.jobsboard.http.routes.HealthRoutes
+import com.smartland.jobsboard.http.HttpApi
 import org.http4s.dsl.*
 import org.http4s.dsl.impl.*
 import org.http4s.ember.server.EmberServerBuilder
@@ -32,7 +33,7 @@ object Application extends IOApp.Simple {
     EmberServerBuilder.default[IO]
       .withHost(config.host)
       .withPort(config.port)
-      .withHttpApp(HealthRoutes[IO].routes.orNotFound)
+      .withHttpApp(HttpApi[IO].endpoints.orNotFound)
       .build
       .use(_ => IO.println("Server ready!") *> IO.never)
   }
