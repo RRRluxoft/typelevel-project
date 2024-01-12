@@ -12,6 +12,8 @@ import org.http4s.dsl.impl.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.*
 import org.http4s.HttpRoutes
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import pureconfig.ConfigReader.Result
 import pureconfig.ConfigSource
 
@@ -27,7 +29,9 @@ object Application extends IOApp.Simple {
   // GET 'localhost:8080/api/courses/a456df8e-9d20-4cfa-8b47-d73eb46f0ed9/students'
   // GET 'localhost:8080/private/health'
 
-  val configSource: Result[EmberConfig] = ConfigSource.default.load[EmberConfig]
+  //  val configSource: Result[EmberConfig] = ConfigSource.default.load[EmberConfig]
+
+  given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
   override def run: IO[Unit] = ConfigSource.default.loadF[IO, EmberConfig].flatMap { config =>
     EmberServerBuilder.default[IO]

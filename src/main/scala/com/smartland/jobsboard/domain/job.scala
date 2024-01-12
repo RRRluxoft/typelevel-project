@@ -1,4 +1,4 @@
-package com.smartland.jobsboard.http
+package com.smartland.jobsboard.domain
 
 import java.util.UUID
 

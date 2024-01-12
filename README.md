@@ -46,3 +46,11 @@ sbt `runMain com.smartland.jobsboard.Application`
 sbt ~ compile
 
 ```
+
+<br>
+
+Http request by <i>httpie</i> utility:
+
+```bash
+http POST localhost:9091/api/jobs/create < src/main/resources/payloads/jobInfo.json
+```

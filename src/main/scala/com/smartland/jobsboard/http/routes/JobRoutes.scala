@@ -3,7 +3,7 @@ package com.smartland.jobsboard.http.routes
 import cats.*
 import cats.effect.*
 import cats.implicits.*
-import com.smartland.jobsboard.http.job.{Job, JobInfo}
+import com.smartland.jobsboard.domain.job.{Job, JobInfo}
 import com.smartland.jobsboard.http.responses.FailureResponse
 import io.circe.generic.auto.*
 import org.http4s.*
@@ -11,11 +11,12 @@ import org.http4s.circe.CirceEntityCodec.*
 import org.http4s.dsl.*
 import org.http4s.dsl.impl.*
 import org.http4s.server.*
+import org.typelevel.log4cats.Logger
 
 import java.util.UUID
 import scala.collection.mutable
 
-class JobRoutes[F[_] : Concurrent] private extends Http4sDsl[F] {
+class JobRoutes[F[_] : Concurrent : Logger] private extends Http4sDsl[F] {
 
   // database
   private val db = mutable.Map[UUID, Job]()
@@ -41,11 +42,15 @@ class JobRoutes[F[_] : Concurrent] private extends Http4sDsl[F] {
     jobInfo = jobInfo,
     active = true
   ).pure[F]
+
+  import com.smartland.jobsboard.logging.syntax.*
   private val createJobRoute: HttpRoutes[F] = HttpRoutes.of[F] {
     case req@POST -> Root / "create" =>
       for {
-        jobInfo <- req.as[JobInfo]
+        jobInfo <- req.as[JobInfo].logError(e => s"Parsing payload failed: $e")
         job <- createJob(jobInfo)
+        //        _ <- Logger[F].info(s"Created job: $job")
+        _ <- db.put(job.id, job).pure[F]
         resp <- Created(job.id)
       } yield resp
   }
@@ -79,5 +84,5 @@ class JobRoutes[F[_] : Concurrent] private extends Http4sDsl[F] {
 }
 
 object JobRoutes {
-  def apply[F[_] : Concurrent] = new JobRoutes[F]
+  def apply[F[_] : Concurrent : Logger] = new JobRoutes[F]
 }
