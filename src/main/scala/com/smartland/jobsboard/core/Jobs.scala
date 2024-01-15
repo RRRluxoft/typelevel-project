@@ -173,7 +173,7 @@ class LiveJobs[F[_]: MonadCancelThrow] private (xa: Transactor[F]) extends Jobs[
     """
       .update
       .run
-      .transcat(xa)
+      .transact(xa)
 }
 
 object LiveJobs {
