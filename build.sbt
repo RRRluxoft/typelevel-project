@@ -65,5 +65,6 @@ lazy val server = (project in file("."))
 //    idePackagePrefix := Some("com.smartland"),
     scalaVersion := scala3Version,
     organization := smartland,
-    libraryDependencies ++= http4s ++ cats ++ circe ++ config ++ doobie ++ other ++ test
+    libraryDependencies ++= http4s ++ cats ++ circe ++ config ++ doobie ++ other ++ test,
+    Compile / mainClass := Some("com.smartland.jobsboard.Application")
   )

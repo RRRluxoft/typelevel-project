@@ -1,7 +1,7 @@
 package com.smartland.foundations
 
 import cats.effect.{IO, IOApp}
-import cats.effect.kernel.MonadCancelThrow
+import cats.effect.*
 import doobie.hikari.HikariTransactor
 import doobie.implicits.*
 import doobie.util.transactor.Transactor

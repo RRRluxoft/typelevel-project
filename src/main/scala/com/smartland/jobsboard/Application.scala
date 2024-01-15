@@ -6,7 +6,7 @@ import cats.implicits.*
 import com.smartland.jobsboard.config.EmberConfig
 import com.smartland.jobsboard.config.syntax.*
 import com.smartland.jobsboard.http.routes.HealthRoutes
-import com.smartland.jobsboard.http.HttpApi
+import com.smartland.jobsboard.modules.{Core, HttpApi}
 import org.http4s.dsl.*
 import org.http4s.dsl.impl.*
 import org.http4s.ember.server.EmberServerBuilder
@@ -34,12 +34,18 @@ object Application extends IOApp.Simple {
   given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
   override def run: IO[Unit] = ConfigSource.default.loadF[IO, EmberConfig].flatMap { config =>
-    EmberServerBuilder.default[IO]
-      .withHost(config.host)
-      .withPort(config.port)
-      .withHttpApp(HttpApi[IO].endpoints.orNotFound)
-      .build
-      .use(_ => IO.println("Server ready!") *> IO.never)
+    val appResource = for {
+      core <- Core[IO]
+      httpApi <- HttpApi[IO](core)
+      server <- EmberServerBuilder
+        .default[IO]
+        .withHost(config.host)
+        .withPort(config.port)
+        .withHttpApp(httpApi.endpoints.orNotFound)
+        .build
+    } yield server
+
+    appResource.use(_ => IO.println("Server ready!") *> IO.never)
   }
 
 }
