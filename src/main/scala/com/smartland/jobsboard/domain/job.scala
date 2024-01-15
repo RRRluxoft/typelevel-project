@@ -32,6 +32,21 @@ object job {
   object JobInfo {
     val empty: JobInfo =
       JobInfo("", "", "", "", false, "", None, None, None, None, None, None, None, None)
+
+    def minimal(company: String,
+                title: String,
+                description: String,
+                externalUrl: String,
+                remote: Boolean,
+                location: String) = JobInfo(
+      company = company,
+      title = title,
+      description = description,
+      externalUrl = externalUrl,
+      remote = remote,
+      location = location,
+      None, None, None, None, None, None, None, None
+    )
   }
 
 }
