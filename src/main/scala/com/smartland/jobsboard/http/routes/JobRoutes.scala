@@ -24,19 +24,18 @@ class JobRoutes[F[_] : Concurrent : Logger] private(jobs: Jobs[F]) extends Http4
   //  private val db = mutable.Map[UUID, Job]()
 
   // POST /jobs?offset=x&limit=y { filter } // TODO
-  private val allJobsRoute: HttpRoutes[F] = HttpRoutes.of[F] {
-    case POST -> Root =>
-      for {
-        jobList <- jobs.all()
-        resp <- Ok(jobList)
-      } yield resp
+  private val allJobsRoute: HttpRoutes[F] = HttpRoutes.of[F] { case POST -> Root =>
+    for {
+      jobList <- jobs.all()
+      resp <- Ok(jobList)
+    } yield resp
   }
 
   // GET /jobs/uuid
-  private val findJobRoute: HttpRoutes[F] = HttpRoutes.of[F] {
-    case GET -> Root / UUIDVar(id) =>
-      jobs.find(id)
-        .flatMap(_.fold(NotFound(FailureResponse(s"Job $id doesnt exist")))(job => Ok(job)))
+  private val findJobRoute: HttpRoutes[F] = HttpRoutes.of[F] { case GET -> Root / UUIDVar(id) =>
+    jobs
+      .find(id)
+      .flatMap(_.fold(NotFound(FailureResponse(s"Job $id doesnt exist")))(job => Ok(job)))
   }
 
   // POST /jobs/create { jobInfo }
@@ -45,8 +44,8 @@ class JobRoutes[F[_] : Concurrent : Logger] private(jobs: Jobs[F]) extends Http4
       for {
         jobInfo <- req.as[JobInfo].logError(e => s"Parsing payload failed: $e")
         jobId <- jobs.create("TODO@smart.land", jobInfo)
-        //        _ <- Logger[F].info(s"Created job: $job")
         resp <- Created(jobId)
+        //        _ <- Logger[F].info(s"Created job: $job")
       } yield resp
   }
 
@@ -66,11 +65,12 @@ class JobRoutes[F[_] : Concurrent : Logger] private(jobs: Jobs[F]) extends Http4
   private val deleteJobRoute: HttpRoutes[F] = HttpRoutes.of[F] {
     case req@DELETE -> Root / UUIDVar(id) =>
       jobs.find(id).flatMap {
-        case Some(job) => for {
-          _ <- jobs.delete(id)
-          _ <- Logger[F].info(s"Job deleted id=$id")
-          res <- Ok()
-        } yield res
+        case Some(job) =>
+          for {
+            _ <- jobs.delete(id)
+            _ <- Logger[F].info(s"Job deleted id=$id")
+            res <- Ok()
+          } yield res
         case None => NotFound(FailureResponse(s"Cannot delete job $id not found"))
       }
   }
