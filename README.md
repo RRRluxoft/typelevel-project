@@ -98,3 +98,8 @@ http PUT localhost:9091/api/jobs/bef585d2-6114-4c98-9ae0-2fb0fd504e97 { jobInfo 
 ```bash
 http DELETE localhost:9091/api/jobs/bef585d2-6114-4c98-9ae0-2fb0fd504e97
 ```
+
+# Before sbt test make sure that Docker run !!!
+
+to
+avoid ```ERROR org.testcontainers.dockerclient.DockerClientProviderStrategy -- Could not find a valid Docker environment.```
