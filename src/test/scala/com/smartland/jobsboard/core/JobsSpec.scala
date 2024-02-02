@@ -2,17 +2,22 @@ package com.smartland.jobsboard.core
 
 import cats.effect.*
 import cats.effect.testing.scalatest.AsyncIOSpec
+import com.smartland.jobsboard.domain.job.JobFilter
+import com.smartland.jobsboard.domain.pagination.Pagination
 import com.smartland.jobsboard.fixtures.*
 import doobie.postgres.implicits.*
 import doobie.implicits.*
 import doobie.util.*
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should.Matchers
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 /**
   * Docker SHOULD be run
   */
 class JobsSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with DoobieSpec with JobFixture {
+  given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
   val initScript: String = "sql/jobs.sql"
 
@@ -116,6 +121,28 @@ class JobsSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with DoobieS
       } yield numberOfDeletedJobs
 
       program.asserting(_ shouldBe 0)
+    }
+  }
+
+  "should filter remote jobs" in {
+    transactor.use { xa =>
+      val program = for {
+        jobs <- LiveJobs[IO](xa)
+        filteredJobs <- jobs.all(JobFilter(remote = true), Pagination.default())
+      } yield filteredJobs
+
+      program.asserting(_ shouldBe List())
+    }
+  }
+
+  "should filter jobs by tags" in {
+    transactor.use { xa =>
+      val program = for {
+        jobs <- LiveJobs[IO](xa)
+        filteredJobs <- jobs.all(JobFilter(tags = List("scala", "scala-3", "cats", "zio")), Pagination.default())
+      } yield filteredJobs
+
+      program.asserting(_ shouldBe List(AwesomeJob))
     }
   }
 

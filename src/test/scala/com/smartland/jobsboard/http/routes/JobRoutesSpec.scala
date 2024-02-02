@@ -5,6 +5,7 @@ import cats.effect.*
 import cats.implicits.*
 import com.smartland.jobsboard.core.*
 import com.smartland.jobsboard.domain.job.*
+import com.smartland.jobsboard.domain.pagination.*
 import com.smartland.jobsboard.fixtures.JobFixture
 import io.circe.generic.auto.*
 import org.http4s.*
@@ -33,6 +34,10 @@ class JobRoutesSpec
 
     override def all(): IO[List[Job]] =
       IO.pure(List(AwesomeJob))
+
+    override def all(filter: JobFilter, pagination: Pagination): IO[List[Job]] =
+      if filter.remote then List().pure[IO]
+      else IO.pure(List(AwesomeJob))
 
     override def find(id: UUID): IO[Option[Job]] =
       if id == AwesomeJobUuid
@@ -75,6 +80,7 @@ class JobRoutesSpec
         // simulate an HTTP request
         response <- jobRoutes.orNotFound.run(
           Request(method = Method.POST, uri = uri"/jobs")
+            .withEntity(JobFilter())
         )
         // get the HTTP response
         retrieved <- response.as[List[Job]]
@@ -82,6 +88,22 @@ class JobRoutesSpec
         // make some assertions
         response.status shouldBe Status.Ok
         retrieved shouldBe List(AwesomeJob)
+      }
+    }
+
+    "should return all jobs that satisfy a filter" in {
+      for {
+        // simulate an HTTP request
+        response <- jobRoutes.orNotFound.run(
+          Request(method = Method.POST, uri = uri"/jobs")
+            .withEntity(JobFilter(remote = true))
+        )
+        // get the HTTP response
+        retrieved <- response.as[List[Job]]
+      } yield {
+        // make some assertions
+        response.status shouldBe Status.Ok
+        retrieved shouldBe List()
       }
     }
 
