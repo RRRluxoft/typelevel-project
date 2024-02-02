@@ -4,9 +4,9 @@ import cats.*
 import cats.effect.*
 import cats.implicits.*
 import com.smartland.jobsboard.core.Jobs
-import com.smartland.jobsboard.domain.job.Job
-import com.smartland.jobsboard.domain.job.JobInfo
-import com.smartland.jobsboard.http.responses.FailureResponse
+import com.smartland.jobsboard.domain.job.*
+import com.smartland.jobsboard.domain.pagination.*
+import com.smartland.jobsboard.http.responses.*
 import com.smartland.jobsboard.http.validation.syntax.*
 import com.smartland.jobsboard.http.validation.validators.*
 import com.smartland.jobsboard.logging.syntax.*
@@ -26,11 +26,16 @@ class JobRoutes[F[_] : Concurrent : Logger] private(jobs: Jobs[F]) extends HttpV
   //  // database
   //  private val db = mutable.Map[UUID, Job]()
 
+  object OffsetQueryParam extends OptionalQueryParamDecoderMatcher[Int]("offset")
+
+  object LimitQueryParam extends OptionalQueryParamDecoderMatcher[Int]("limit")
+
   // POST /jobs?offset=x&limit=y { filter } // TODO
   private val allJobsRoute: HttpRoutes[F] = HttpRoutes.of[F] {
-    case POST -> Root =>
+    case req@POST -> Root :? LimitQueryParam(limit) +& OffsetQueryParam(offset) =>
       for {
-        jobList <- jobs.all()
+        filter <- req.as[JobFilter]
+        jobList <- jobs.all(filter, Pagination(limit, offset))
         resp <- Ok(jobList)
       } yield resp
   }

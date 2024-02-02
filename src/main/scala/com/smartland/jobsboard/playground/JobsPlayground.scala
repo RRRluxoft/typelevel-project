@@ -7,10 +7,14 @@ import doobie.util.*
 import doobie.hikari.HikariTransactor
 import com.smartland.jobsboard.core.*
 import com.smartland.jobsboard.domain.job.*
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.io.StdIn
 
 object JobsPlayground extends IOApp.Simple {
+
+  given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
   val postgresResource: Resource[IO, HikariTransactor[IO]] = for {
     ec <- ExecutionContexts.fixedThreadPool[IO](32)

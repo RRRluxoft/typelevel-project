@@ -33,20 +33,34 @@ object job {
     val empty: JobInfo =
       JobInfo("", "", "", "", false, "", None, None, None, None, None, None, None, None)
 
-    def minimal(company: String,
-                title: String,
-                description: String,
-                externalUrl: String,
-                remote: Boolean,
-                location: String) = JobInfo(
-      company = company,
-      title = title,
-      description = description,
-      externalUrl = externalUrl,
-      remote = remote,
-      location = location,
-      None, None, None, None, None, None, None, None
-    )
+    def minimal(company: String, title: String, description: String, externalUrl: String, remote: Boolean, location: String) =
+      JobInfo(
+        company = company,
+        title = title,
+        description = description,
+        externalUrl = externalUrl,
+        remote = remote,
+        location = location,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None
+      )
+
   }
+
+  final case class JobFilter(
+                              companies: List[String] = List(),
+                              locations: List[String] = List(),
+                              countries: List[String] = List(),
+                              seniorities: List[String] = List(),
+                              tags: List[String] = List(),
+                              maxSalary: Option[Int] = None,
+                              remote: Boolean = false
+                            )
 
 }
